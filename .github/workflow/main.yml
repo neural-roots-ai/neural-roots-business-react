@@ -26,5 +26,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/neural-roots-business-react:v1.0.0
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/neural-roots-business-react:latest
 
