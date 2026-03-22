@@ -2,15 +2,19 @@
 ## NEURAL ROOTS BUSINESS CONTAINER ##
 #####################################
 
-# This Dockerfile is used to build a container that runs a rect.js app
-# Use the official Node.js 22.13.1 image
-
-FROM node:22.13.1-alpine
-
+# Stage 1: Build
+FROM node:22.13.1-alpine AS builder
 COPY ./app /app
-
 WORKDIR /app
+RUN yarn install
+RUN npm run build
 
-RUN yarn install  # Pre-install dependencies at build time
+# Stage 2: Serve
+FROM nginx:alpine
+COPY --from=builder /app/build /usr/share/nginx/html
 
-RUN npm run build . # Pre-build your app at build time
+# optional: custom nginx config for React Router support
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
